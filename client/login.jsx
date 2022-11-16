@@ -9,7 +9,7 @@ const handleLogin = (e) => {
     const _csrf = e.target.querySelector('#_csrf').value;
 
     if (!username || !pass) {
-        helper.handleError('Username or password is empty!');
+        helper.showMessage('Username or password is empty!');
         return false;
     }
 

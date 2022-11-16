@@ -35,7 +35,7 @@ nav{
     column-gap: 2em;
 }
 
-button, .buttonLook {
+button, .buttonLook, input {
     text-align: center;
     background-color: #2e122998;
     border: #ffd900 solid 2px;
@@ -48,17 +48,17 @@ button, .buttonLook {
     outline: none;
 }
 
-button:hover, .buttonLook:hover {
+button:hover, .buttonLook:hover, input.formSubmit {
     cursor: pointer;
 }
 
-button:hover, button:focus, .buttonLook:hover, .buttonLook:focus {
+button:hover, button:focus, .buttonLook:hover, .buttonLook:focus, input:hover, input:focus {
     border-color: #ffd900;
     color: #ffd900;
     background-color: #ffd9002a;
 }
 
-button.active, button:active, .buttonLook.active, .buttonLook:active {
+button.active, button:active, .buttonLook.active, .buttonLook:active, input:active {
     border-color: #ffd900;
     background-color: #ffd900;
     color: black;
@@ -84,6 +84,40 @@ a:focus, a:hover {
     color: #ff9900;
 }
 
-@media screen and (max-width:1200px) {
+#loginForm{
+    width: 30vw;
+    margin: 5em auto;
+}
 
+/* message box needs to float in front of everything */
+.message {
+    z-index: 2;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    background-color: #2e1229d3;
+    border: #ffd900 solid 2px;
+    font-size: xx-large;
+    border-radius: 16px;
+    padding: 1.5em .7em;
+    margin: 3em auto;
+    margin-left: -25%;
+    display: block;
+    width: 50%;
+    outline: none;
+    visibility: hidden;
+    transform: scaleY(0);
+    text-align: center;
+    pointer-events: none
+}
+
+@media screen and (max-width:1200px) {
+    nav{
+        grid-template-columns: 90%;
+    }
+
+    #loginForm{
+        width: 60vw;
+        margin: 5em auto;
+    }
 }

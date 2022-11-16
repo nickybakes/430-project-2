@@ -6,6 +6,31 @@ const handleError = (message) => {
     document.getElementById('errorMessage').textContent = message;
     document.getElementById('domoMessage').classList.remove('hidden');
   };
+
+  //shows our message box and then hides it after a second
+function showMessage(message) {
+  //get our message box
+  let messageBox = document.querySelector(".message");
+  //set its text to our custom message
+  messageBox.innerHTML = message;
+
+  //show the message box!
+  messageBox.style.opacity = 1;
+  messageBox.style.visibility = "visible";
+  messageBox.style.transform = "scaleY(1)";
+
+  //after about a second, hide the message box again
+  setTimeout(hideMessage, 2000);
+}
+
+//hides our message box
+function hideMessage() {
+  //get our message box and hide it
+  let messageBox = document.querySelector(".message");
+  messageBox.style.opacity = 0;
+  messageBox.style.visibility = "hidden";
+  messageBox.style.transform = "scaleY(0)";
+}
   
   /* Sends post requests to the server using fetch. Will look for various
      entries in the response JSON object, and will handle them appropriately.
@@ -42,6 +67,7 @@ const handleError = (message) => {
 
   module.exports = {
     handleError,
+    showMessage,
     sendPost,
     hideError,
   }
