@@ -2,10 +2,6 @@
    displays it to the user. Will be hidden by other events that could
    end in an error.
 */
-const handleError = (message) => {
-    document.getElementById('errorMessage').textContent = message;
-    document.getElementById('domoMessage').classList.remove('hidden');
-  };
 
   //shows our message box and then hides it after a second
 function showMessage(message) {
@@ -45,10 +41,10 @@ function hideMessage() {
     });
   
     const result = await response.json();
-    document.getElementById('domoMessage').classList.add('hidden');
+    hideMessage();
   
     if(result.error) {
-        handleError(result.error);
+        showMessage(result.error);
       }
 
     if(result.redirect) {
@@ -61,13 +57,8 @@ function hideMessage() {
 
   };
 
-  const hideError = () => {
-    document.getElementById('domoMessage').classList.add('hidden');
-  }
-
   module.exports = {
-    handleError,
     showMessage,
     sendPost,
-    hideError,
+    hideMessage,
   }

@@ -84,7 +84,7 @@ a:focus, a:hover {
     color: #ff9900;
 }
 
-#loginForm{
+#loginForm, #signupForm{
     width: 30vw;
     margin: 5em auto;
 }
@@ -93,7 +93,7 @@ a:focus, a:hover {
 .message {
     z-index: 2;
     position: fixed;
-    bottom: 0;
+    top: 25%;
     left: 50%;
     background-color: #2e1229d3;
     border: #ffd900 solid 2px;
@@ -116,7 +116,7 @@ a:focus, a:hover {
         grid-template-columns: 90%;
     }
 
-    #loginForm{
+    #loginForm, #signupForm{
         width: 60vw;
         margin: 5em auto;
     }

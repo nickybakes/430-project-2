@@ -2,7 +2,7 @@ const helper = require('./helper.js');
 
 const handleLogin = (e) => {
     e.preventDefault();
-    helper.hideError();
+    helper.hideMessage();
 
     const username = e.target.querySelector('#user').value;
     const pass = e.target.querySelector('#pass').value;
@@ -20,7 +20,7 @@ const handleLogin = (e) => {
 
 const handleSignup = (e) => {
     e.preventDefault();
-    helper.hideError();
+    helper.hideMessage();
 
     const username = e.target.querySelector('#user').value;
     const pass = e.target.querySelector('#pass').value;
@@ -28,12 +28,12 @@ const handleSignup = (e) => {
     const _csrf = e.target.querySelector('#_csrf').value;
 
     if (!username || !pass || !pass2) {
-        helper.handleError('All fields are required!');
+        helper.showMessage('All fields are required!');
         return false;
     }
 
     if (pass !== pass2) {
-        helper.handleError('Passwords do not match!');
+        helper.showMessage('Passwords do not match!');
         return false;
     }
 
@@ -56,15 +56,15 @@ const LoginWindow = (props) => {
             <label htmlFor="pass">Password: </label>
             <input id="pass" type="password" name="pass" placeholder="password" />
             <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
-            <input className="formSubmit" type="submit" value="Sign in" />
+            <input className="formSubmit" type="submit" value="Log in" />
         </form>
     );
 }
 
 const SignupWindow = (props) => {
     return (
-        <form id="singupForm"
-            name="singupForm"
+        <form id="signupForm"
+            name="signupForm"
             onSubmit={handleSignup}
             action="/signup"
             method="POST"
@@ -77,7 +77,7 @@ const SignupWindow = (props) => {
             <label htmlFor="pass2">Password: </label>
             <input id="pass2" type="password" name="pass2" placeholder="retype password" />
             <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
-            <input className="formSubmit" type="submit" value="Sign in" />
+            <input className="formSubmit" type="submit" value="Sign up!" />
         </form>
     );
 }

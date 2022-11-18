@@ -3,7 +3,7 @@ const DomoModel = require('../models/Domo');
 
 const { Domo } = models;
 
-const makerPage = (req, res) => res.render('app');
+const appPage = (req, res) => res.render('app');
 
 const makeDomo = async (req, res) => {
   if (!req.body.name || !req.body.age) {
@@ -39,7 +39,7 @@ const getDomos = (req, res) => DomoModel.findByOwner(req.session.account._id, (e
 });
 
 module.exports = {
-  makerPage,
+  appPage,
   makeDomo,
   getDomos,
 };

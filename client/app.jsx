@@ -2,14 +2,14 @@ const helper = require('./helper.js');
 
 const handleDomo = (e) => {
     e.preventDefault();
-    helper.hideError();
+    helper.hideMessage();
 
     const name = e.target.querySelector('#domoName').value;
     const age = e.target.querySelector('#domoAge').value;
     const _csrf = e.target.querySelector('#_csrf').value;
 
     if (!name || !age) {
-        helper.handleError('All fields are requied!');
+        helper.showMessage('All fields are requied!');
         return false;
     }
 
