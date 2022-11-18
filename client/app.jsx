@@ -1,4 +1,5 @@
 const helper = require('./helper.js');
+const clipboardy = require('clipboardy');
 
 const handleDomo = (e) => {
     e.preventDefault();
@@ -13,8 +14,14 @@ const handleDomo = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, {name, age, _csrf}, loadDomosFromServer);
+    helper.sendPost(e.target.action, { name, age, _csrf }, loadDomosFromServer);
     return false;
+}
+
+const pasteFromClipboard = async (e) => {
+    let c = await clipboardy.read();
+    console.log(c);
+    //https://www.wordreference.com/es/en/translation.asp?spen=jovenes
 }
 
 const DomoForm = (props) => {
@@ -22,7 +29,7 @@ const DomoForm = (props) => {
         <form id="domoForm"
             onSubmit={handleDomo}
             name="domoForm"
-            action="/maker"
+            action="/app"
             method="POST"
             className="domoForm"
         >
@@ -67,7 +74,7 @@ const loadDomosFromServer = async () => {
     const response = await fetch('/getDomos');
     const data = await response.json();
     ReactDOM.render(
-        <DomoList domos = {data.domos} />,
+        <DomoList domos={data.domos} />,
         document.getElementById('domos')
     );
 }
@@ -77,14 +84,22 @@ const init = async () => {
     const data = await response.json();
 
     ReactDOM.render(
-        <DomoForm csrf = {data.csrfToken} />,
+        <DomoForm csrf={data.csrfToken} />,
         document.getElementById('makeDomo')
     );
 
     ReactDOM.render(
-        <DomoList domos = {[]} />,
+        <DomoList domos={[]} />,
         document.getElementById('domos')
     );
+
+    const form = document.getElementById('makeDomo');
+
+    form.addEventListener('paste', (e) => {
+        pasteFromClipboard();
+        console.log("wdadawd");
+    });
+
 
     loadDomosFromServer();
 }
