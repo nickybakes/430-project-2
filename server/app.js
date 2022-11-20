@@ -16,7 +16,7 @@ const router = require('./router.js');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
-const dbURI = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+const dbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/Pasteodon';
 mongoose.connect(dbURI, (err) => {
   if (err) {
     console.log('Could not connect to database');
@@ -47,7 +47,6 @@ app.engine('handlebars', expressHandlebars.engine({ defaultLayout: '' }));
 app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/../views`);
 app.use(cookieParser());
-
 
 redisClient.connect().then(() => {
   app.use(session({

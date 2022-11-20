@@ -1,6 +1,6 @@
 const models = require('../models');
 
-const { Account } = models;
+const { Account, Channel } = models;
 
 const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
@@ -45,7 +45,19 @@ const signup = async (req, res) => {
 
   try {
     const hash = await Account.generateHash(pass);
-    const newAccount = new Account({ username, password: hash });
+
+    // wow i sure do love not being able to have for loops in a server!!
+    const channels = [];
+
+    let newChannel = new Channel({ index: 0, name: ('Channel 1'), messages: [] });
+    await newChannel.save();
+    channels.push(newChannel);
+
+    newChannel = new Channel({ index: 1, name: ('Channel 2'), messages: [] });
+    await newChannel.save();
+    channels.push(newChannel);
+
+    const newAccount = new Account({ username, password: hash, channels });
     await newAccount.save();
     req.session.account = Account.toAPI(newAccount);
     return res.json({ redirect: '/app' });
@@ -61,10 +73,17 @@ const signup = async (req, res) => {
 
 const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
 
+const getChannels = async (req, res) => {
+  const channels = req.session.account.channels;
+
+  return res.json({ channels });
+};
+
 module.exports = {
   loginPage,
   login,
   logout,
   signup,
   getToken,
+  getChannels,
 };

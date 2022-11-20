@@ -33,6 +33,15 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  channels: {
+    type: Array,
+    required: true,
+  },
+  isPremium: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   createdDate: {
     type: Date,
     default: Date.now,
@@ -42,6 +51,8 @@ const AccountSchema = new mongoose.Schema({
 // Converts a doc to something we can store in redis later on.
 AccountSchema.statics.toAPI = (doc) => ({
   username: doc.username,
+  channels: doc.channels,
+  isPremium: doc.isPremium,
   _id: doc._id,
 });
 
