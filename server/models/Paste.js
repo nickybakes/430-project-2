@@ -40,8 +40,6 @@ PasteSchema.statics.findByOwner = (ownerId, channelIndex, callback) => {
     channel: channelIndex,
   };
 
-  console.log(channelIndex);
-
   return PasteModel.find(search).select('text').lean().exec(callback);
 };
 

@@ -25,6 +25,7 @@ h2 {
 }
 
 nav {
+    display: block;
     width: 100%;
     background-color: rgb(45, 45, 45);
     display: grid;
@@ -39,6 +40,7 @@ nav {
     height: 100vh;
     width: 100vw;
     display: grid;
+    overflow: hidden;
     grid-template-rows: fit-content(20%) auto;
 }
 
@@ -49,16 +51,15 @@ nav {
     grid-template-columns: 21% auto;
 }
 
-#sideBar{
+#sideBar {
     width: 100%;
-    height: 100%;
     background-color: rgb(29, 29, 29);
     border-right: #ffd900 solid 2px;
 }
 
-#mainView{
+#mainView {
     width: 100%;
-    height: 100%;
+    height: 95vh;
     overflow-y: auto;
 }
 
@@ -78,7 +79,7 @@ input {
     outline: none;
 }
 
-.buttonLook.channelButton{
+.buttonLook.channelButton {
     border-right: none;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
@@ -141,24 +142,46 @@ input:active {
     margin: 5em auto;
 }
 
-.pasteList{
+.pasteList {
     width: 90%;
+    padding-bottom: 3em;
     margin: 0 auto;
-    
+    margin-bottom: 3em;
+}
+
+.paste p,
+.lowMarginPaste p {
+    margin: 0;
 }
 
 .paste {
     display: block;
     width: 90%;
     font-size: large;
+    margin-top: 1em;
+}
+
+.lowMarginPaste {
+    display: block;
+    width: 90%;
+    font-size: large;
+    margin-top: .2em;
 }
 
 .paste img {
     width: 50%;
 }
 
-.paste:hover {
+.paste:hover,
+.lowMarginPaste:hover {
     background-color: rgb(29, 29, 29);
+}
+
+.videoEmbed {
+    max-width: 100%;
+    height: 40vh;
+    width: 35vw;
+    display: block;
 }
 
 /* message box needs to float in front of everything */
@@ -196,5 +219,12 @@ input:active {
     #signupForm {
         width: 60vw;
         margin: 5em auto;
+    }
+
+    .pasteList {
+        width: 90%;
+        padding-bottom: 6em;
+        margin: 0 auto;
+        margin-bottom: 6em;
     }
 }

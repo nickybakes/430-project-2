@@ -3,24 +3,6 @@ const helper = require('./helper.js');
 let selectedChannelIndex = 0;
 let csrf;
 
-const handleDomo = (e) => {
-    e.preventDefault();
-    helper.hideMessage();
-
-    const name = e.target.querySelector('#domoName').value;
-    const age = e.target.querySelector('#domoAge').value;
-    const csrf = e.target.querySelector('#_csrf').value;
-
-    if (!name || !age) {
-        helper.showMessage('All fields are requied!');
-        return false;
-    }
-
-    helper.sendPost(e.target.action, { name, age, csrf }, loadDomosFromServer);
-    return false;
-}
-
-
 //https://bobbyhadz.com/blog/javascript-check-if-url-is-image#:~:text=To%20check%20if%20a%20url,return%20true%20if%20it%20does.
 //from above, just checks if a link ends in an image file extension
 const isImageUrl = (url) => {
@@ -35,6 +17,22 @@ const isFormattedUrl = (text) => {
     } catch (e) {
         return false;
     }
+}
+
+//https://stackoverflow.com/questions/28735459/how-to-validate-youtube-url-in-client-side-in-text-box
+//i have edited it slightly to fit my use case
+//will return null if its not a valid youtube url
+//otherwise it will return a link for embeding a youtube video
+const isYouTubeUrl = (url) => {
+    if (url != undefined || url != '') {
+        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+        var match = url.match(regExp);
+        if (match && match[2].length == 11) {
+            return 'https://www.youtube.com/embed/' + match[2] + '?autoplay=0';
+        }
+        return null;
+    }
+    return null;
 }
 
 const pasteFromClipboard = async (e) => {
@@ -72,48 +70,34 @@ const DomoForm = (props) => {
     );
 }
 
-const DomoList = (props) => {
-    if (props.domos.length === 0) {
-        return (
-            <div className="domoList">
-                <h3 classNames="emptyDomo">No Domos Yet!</h3>
-            </div>
-        );
-    }
-
-    const domoNodes = props.domos.map(domo => {
-        return (
-            <div key={domo._id} className="domo">
-                <img src="assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-                <h3 classNames="domoName"> Name: {domo.name} </h3>
-                <h3 classNames="domoAge"> Age: {domo.age} </h3>
-            </div>
-        );
-
-    });
-
-    return (
-        <div className="domoList">
-            {domoNodes}
-        </div>
-    );
-}
-
 const PasteList = (props) => {
     let pasteNodes = [];
 
-    pasteNodes.push(<p key={-1}>While focused on this area, paste text, links, and image links with Ctrl + V!</p>);
+    let previousLinkType = "none";
+
+    pasteNodes.push(<p key={-1} className='paste'>While focused on this area, paste text, links, and image links with Ctrl + V!</p>);
 
     for (let i = 0; i < props.pastes.length; i++) {
         let paste = props.pastes[i];
         if (isFormattedUrl(paste.text)) {
+            let embedUrl;
             if (isImageUrl(paste.text)) {
-                pasteNodes.push(<div className='paste'><a href={paste.text} className="inlineLink">{paste.text}</a><img src={paste.text} alt={'Image imported from web'} /></div>);
+                pasteNodes.push(<div className='paste' key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><img src={paste.text} alt={'Image imported from web'} /></div>);
+                previousLinkType = 'image';
+            } else if (embedUrl = isYouTubeUrl(paste.text)) {
+                pasteNodes.push(<div className='paste' key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><iframe src={embedUrl} className="videoEmbed" type="text/html" frameBorder="0" allowFullScreen></iframe></div>);
+                previousLinkType = 'youtube';
             } else {
-                pasteNodes.push(<a href={paste.text} className="inlineLink paste">{paste.text}</a>);
+                pasteNodes.push(<div className='paste' key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a></div>);
+                previousLinkType = 'link';
             }
         } else {
-            pasteNodes.push(<p className='paste'>{paste.text}</p>);
+            if (previousLinkType == 'p') {
+                pasteNodes.push(<div className='lowMarginPaste' key={i}><p>{paste.text}</p></div>);
+            } else {
+                pasteNodes.push(<div className='paste' key={i}><p>{paste.text}</p></div>);
+            }
+            previousLinkType = 'p';
         }
     }
 
