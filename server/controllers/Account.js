@@ -30,6 +30,13 @@ const login = (req, res) => {
   });
 };
 
+// makes a new channel for pastes and returns it
+const makeNewChannel = async (index, req) => {
+  const newChannel = new Channel({ index, name: (`Channel ${index + 1}`), owner: req.session.account });
+  await newChannel.save();
+  return newChannel;
+};
+
 const signup = async (req, res) => {
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
@@ -46,20 +53,13 @@ const signup = async (req, res) => {
   try {
     const hash = await Account.generateHash(pass);
 
-    // wow i sure do love not being able to have for loops in a server!!
-    const channels = [];
-
-    let newChannel = new Channel({ index: 0, name: ('Channel 1'), messages: [] });
-    await newChannel.save();
-    channels.push(newChannel);
-
-    newChannel = new Channel({ index: 1, name: ('Channel 2'), messages: [] });
-    await newChannel.save();
-    channels.push(newChannel);
-
-    const newAccount = new Account({ username, password: hash, channels });
+    const newAccount = new Account({ username, password: hash });
     await newAccount.save();
     req.session.account = Account.toAPI(newAccount);
+
+    makeNewChannel(0, req);
+    makeNewChannel(1, req);
+
     return res.json({ redirect: '/app' });
   } catch (err) {
     console.log(err);
@@ -73,17 +73,10 @@ const signup = async (req, res) => {
 
 const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
 
-const getChannels = async (req, res) => {
-  const channels = req.session.account.channels;
-
-  return res.json({ channels });
-};
-
 module.exports = {
   loginPage,
   login,
   logout,
   signup,
   getToken,
-  getChannels,
 };

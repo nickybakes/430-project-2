@@ -3,8 +3,8 @@ const mid = require('./middleware');
 
 const router = (app) => {
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
-  app.get('/getDomos', mid.requiresLogin, controllers.Domo.getDomos);
-  app.get('/getChannels', mid.requiresLogin, controllers.Account.getChannels);
+  app.get('/getChannels', mid.requiresLogin, controllers.Channel.getChannels);
+  app.get('/getPastes', mid.requiresLogin, controllers.Paste.getPastes);
 
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);
@@ -12,8 +12,8 @@ const router = (app) => {
   app.post('/signup', mid.requiresSecure, mid.requiresLogout, controllers.Account.signup);
 
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
-  app.get('/app', mid.requiresLogin, controllers.Domo.appPage);
-  app.post('/app', mid.requiresLogin, controllers.Domo.makeDomo);
+  app.get('/app', mid.requiresLogin, controllers.Paste.appPage);
+  app.post('/app', mid.requiresLogin, controllers.Paste.makePaste);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };

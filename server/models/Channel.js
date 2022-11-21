@@ -12,12 +12,11 @@ const ChannelSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    unique: true,
   },
-  messages:
-  {
-    type: Array,
+  owner: {
+    type: mongoose.Schema.ObjectId,
     required: true,
+    ref: 'Account',
   },
   createdDate: {
     type: Date,
@@ -29,8 +28,15 @@ const ChannelSchema = new mongoose.Schema({
 ChannelSchema.statics.toAPI = (doc) => ({
   index: doc.index,
   name: doc.name,
-  messages: doc.messages,
 });
+
+ChannelSchema.statics.findByOwner = (ownerId, callback) => {
+  const search = {
+    owner: mongoose.Types.ObjectId(ownerId),
+  };
+
+  return ChannelModel.find(search).select('index name').lean().exec(callback);
+};
 
 ChannelModel = mongoose.model('Channel', ChannelSchema);
 module.exports = ChannelModel;

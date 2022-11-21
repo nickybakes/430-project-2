@@ -33,10 +33,6 @@ const AccountSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  channels: {
-    type: Array,
-    required: true,
-  },
   isPremium: {
     type: Boolean,
     required: true,

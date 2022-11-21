@@ -65,6 +65,7 @@ nav {
 button,
 .buttonLook,
 input {
+    text-decoration: none;
     text-align: center;
     background-color: #2e122998;
     border: #ffd900 solid 2px;
@@ -111,8 +112,8 @@ input:active {
     color: black;
 }
 
-a,
-a:visited {
+.inlineLink,
+.inlineLink:visited {
     background: none;
     outline: none;
     border: none;
@@ -124,19 +125,40 @@ a:visited {
     text-decoration: none;
 }
 
-a:active {
+.inlineLink:active {
     color: #d37f00;
 }
 
-a:focus,
-a:hover {
+.inlineLink:focus,
+.inlineLink:hover {
     color: #ff9900;
+    text-decoration: underline;
 }
 
 #loginForm,
 #signupForm {
     width: 30vw;
     margin: 5em auto;
+}
+
+.pasteList{
+    width: 90%;
+    margin: 0 auto;
+    
+}
+
+.paste {
+    display: block;
+    width: 90%;
+    font-size: large;
+}
+
+.paste img {
+    width: 50%;
+}
+
+.paste:hover {
+    background-color: rgb(29, 29, 29);
 }
 
 /* message box needs to float in front of everything */
