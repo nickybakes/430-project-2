@@ -25,8 +25,8 @@ const isFormattedUrl = (text) => {
 //otherwise it will return a link for embeding a youtube video
 const isYouTubeUrl = (url) => {
     if (url != undefined || url != '') {
-        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
-        var match = url.match(regExp);
+        let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+        let match = url.match(regExp);
         if (match && match[2].length == 11) {
             return 'https://www.youtube.com/embed/' + match[2] + '?autoplay=0';
         }
@@ -51,23 +51,20 @@ const pasteFromClipboard = async (e) => {
     helper.sendPost("/app", { text, channelIndex: selectedChannelIndex, _csrf: csrf }, loadPastesFromServer);
 }
 
-const DomoForm = (props) => {
-    return (
-        <form id="domoForm"
-            onSubmit={handleDomo}
-            name="domoForm"
-            action="/app"
-            method="POST"
-            className="domoForm"
-        >
-            <label htmlFor="name">Name: </label>
-            <input id="domoName" type="text" name="name" placeholder="Domo Name" />
-            <label htmlFor="age">Age: </label>
-            <input id="domoAge" type="number" min="0" name="pass" />
-            <input id="_csrf" type="hidden" name="_csrf" value={props.csrf} />
-            <input className="makeDomoSubmit" type="submit" value="Make Domo" />
-        </form>
-    );
+const pasteHover = (e) => {
+    console.log(e.target.getElementsByClassName('pasteHoverButtons'));
+}
+
+const copyPasteButtonClick = (e) => {
+    console.log("copy:" + e.target);
+}
+
+const deletePasteButtonClick = (e) => {
+    console.log("delete:" + e.target);
+}
+
+const getPasteHoverButtons = () => {
+    return <div className='pasteHoverButtons'><button className="buttonLook rightSideFlat" onClick={copyPasteButtonClick}>C</button><button className="buttonLook leftSideFlat" onClick={deletePasteButtonClick}>X</button></div>;
 }
 
 const PasteList = (props) => {
@@ -75,27 +72,27 @@ const PasteList = (props) => {
 
     let previousLinkType = "none";
 
-    pasteNodes.push(<p key={-1} className='paste'>While focused on this area, paste text, links, and image links with Ctrl + V!</p>);
+    pasteNodes.push(<div key={-1} className='paste'><p>While focused on this area, paste text, links, and image links with Ctrl + V!</p></div>);
 
     for (let i = 0; i < props.pastes.length; i++) {
         let paste = props.pastes[i];
         if (isFormattedUrl(paste.text)) {
             let embedUrl;
             if (isImageUrl(paste.text)) {
-                pasteNodes.push(<div className='paste' key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><img src={paste.text} alt={'Image imported from web'} /></div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><img src={paste.text} alt={'Image imported from web'} />{getPasteHoverButtons()}</div>);
                 previousLinkType = 'image';
             } else if (embedUrl = isYouTubeUrl(paste.text)) {
-                pasteNodes.push(<div className='paste' key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><iframe src={embedUrl} className="videoEmbed" type="text/html" frameBorder="0" allowFullScreen></iframe></div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><iframe src={embedUrl} className="videoEmbed" type="text/html" frameBorder="0" allowFullScreen></iframe>{getPasteHoverButtons()}</div>);
                 previousLinkType = 'youtube';
             } else {
-                pasteNodes.push(<div className='paste' key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a></div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a>{getPasteHoverButtons()}</div>);
                 previousLinkType = 'link';
             }
         } else {
             if (previousLinkType == 'p') {
-                pasteNodes.push(<div className='lowMarginPaste' key={i}><p>{paste.text}</p></div>);
+                pasteNodes.push(<div className='lowMarginPaste' onMouseOver={pasteHover} key={i}><p>{paste.text}</p>{getPasteHoverButtons()}</div>);
             } else {
-                pasteNodes.push(<div className='paste' key={i}><p>{paste.text}</p></div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} key={i}><p>{paste.text}</p>{getPasteHoverButtons()}</div>);
             }
             previousLinkType = 'p';
         }
@@ -112,7 +109,7 @@ const ChannelList = (props) => {
     if (props.channels == undefined || props.channels.length === 0) {
         return (
             <div className="channelList">
-                <h3 className="emptyDomo">No Channels</h3>
+                <p>No Channels</p>
             </div>
         );
     }
@@ -132,20 +129,6 @@ const ChannelList = (props) => {
         <div className="channelList">
             {channelNodes}
         </div>
-    );
-}
-
-const loadDomosFromServer = async () => {
-    const csrfRes = await fetch('/getToken');
-    const csrfData = await csrfRes.json();
-    csrf = csrfData.csrfToken;
-
-
-    const response = await fetch('/getDomos');
-    const data = await response.json();
-    ReactDOM.render(
-        <DomoList domos={data.domos} />,
-        document.getElementById('domos')
     );
 }
 

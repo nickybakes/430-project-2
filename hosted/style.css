@@ -85,6 +85,16 @@ input {
     border-bottom-right-radius: 0px;
 }
 
+.buttonLook.rightSideFlat {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.buttonLook.leftSideFlat {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
 button:hover,
 .buttonLook:hover,
 input.formSubmit {
@@ -159,6 +169,7 @@ input:active {
     width: 90%;
     font-size: large;
     margin-top: 1em;
+    position: relative;
 }
 
 .lowMarginPaste {
@@ -175,6 +186,15 @@ input:active {
 .paste:hover,
 .lowMarginPaste:hover {
     background-color: rgb(29, 29, 29);
+}
+
+.pasteHoverButtons{
+    display: grid;
+    grid-template-columns: auto auto;
+    position: absolute;
+    top: -2em;
+    right: -2em;
+    visibility: hidden;
 }
 
 .videoEmbed {
