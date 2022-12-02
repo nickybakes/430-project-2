@@ -3,7 +3,7 @@
    end in an error.
 */
 
-  //shows our message box and then hides it after a second
+//shows our message box and then hides it after a second
 function showMessage(message) {
   //get our message box
   let messageBox = document.querySelector(".message");
@@ -27,38 +27,45 @@ function hideMessage() {
   messageBox.style.visibility = "hidden";
   messageBox.style.transform = "scaleY(0)";
 }
-  
-  /* Sends post requests to the server using fetch. Will look for various
-     entries in the response JSON object, and will handle them appropriately.
-  */
-  const sendPost = async (url, data, handler) => {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-  
+
+/* Sends post requests to the server using fetch. Will look for various
+   entries in the response JSON object, and will handle them appropriately.
+*/
+const sendPost = async (url, data, handler, method = 'POST') => {
+  const response = await fetch(url, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+
+  if (response.status != 204) {
     const result = await response.json();
     hideMessage();
-  
-    if(result.error) {
-        showMessage(result.error);
-      }
 
-    if(result.redirect) {
+    if (result.error) {
+      handleError(result.error);
+    }
+
+    if (result.redirect) {
       window.location = result.redirect;
     }
-  
-    if(handler){
-        handler(result);
+
+    if (handler) {
+      handler(result);
     }
-
-  };
-
-  module.exports = {
-    showMessage,
-    sendPost,
-    hideMessage,
+  } else {
+    if (handler) {
+      handler();
+    }
   }
+
+};
+
+module.exports = {
+  showMessage,
+  sendPost,
+  hideMessage,
+}

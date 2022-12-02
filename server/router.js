@@ -14,6 +14,7 @@ const router = (app) => {
   app.get('/logout', mid.requiresLogin, controllers.Account.logout);
   app.get('/app', mid.requiresLogin, controllers.Paste.appPage);
   app.post('/app', mid.requiresLogin, controllers.Paste.makePaste);
+  app.delete('/app', mid.requiresLogin, controllers.Paste.deletePaste);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };

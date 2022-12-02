@@ -52,19 +52,52 @@ const pasteFromClipboard = async (e) => {
 }
 
 const pasteHover = (e) => {
-    console.log(e.target.getElementsByClassName('pasteHoverButtons'));
+    if (!e.target.classList.contains('paste')) {
+        let currentNode = e.target.parentNode;
+        while (!currentNode.classList.contains('paste') && currentNode.parentNode != null) {
+            currentNode = currentNode.parentNode;
+        }
+        currentNode.querySelector('.pasteHoverButtons').classList.remove('hidden');
+    } else {
+        e.target.querySelector('.pasteHoverButtons').classList.remove('hidden');
+    }
+}
+
+const pasteHoverOff = (e) => {
+    if (!e.target.classList.contains('paste')) {
+        let currentNode = e.target.parentNode;
+        while (!currentNode.classList.contains('paste') && currentNode.parentNode != null) {
+            currentNode = currentNode.parentNode;
+        }
+        currentNode.querySelector('.pasteHoverButtons').classList.add('hidden');
+    } else {
+        e.target.querySelector('.pasteHoverButtons').classList.add('hidden');
+    }
 }
 
 const copyPasteButtonClick = (e) => {
-    console.log("copy:" + e.target);
+    let currentNode = e.target.parentNode.parentNode;
+
+    let text = currentNode.getAttribute('data-raw-text');
+
+    navigator.clipboard.writeText(text);
+
+    helper.hideMessage();
+    helper.showMessage('Copied to clipboard!');
 }
 
-const deletePasteButtonClick = (e) => {
-    console.log("delete:" + e.target);
+const deletePasteButtonClick = async (e) => {
+    let currentNode = e.target.parentNode.parentNode;
+
+    let id = currentNode.getAttribute('data-id');
+
+    console.log("deleting paste with id of: " + id);
+
+    helper.sendPost("/app", { id, _csrf: csrf }, loadPastesFromServer, 'DELETE');
 }
 
 const getPasteHoverButtons = () => {
-    return <div className='pasteHoverButtons'><button className="buttonLook rightSideFlat" onClick={copyPasteButtonClick}>C</button><button className="buttonLook leftSideFlat" onClick={deletePasteButtonClick}>X</button></div>;
+    return <div className='pasteHoverButtons hidden'><button className="buttonLook rightSideFlat" onClick={copyPasteButtonClick}>C</button><button className="buttonLook leftSideFlat" onClick={deletePasteButtonClick}>X</button></div>;
 }
 
 const PasteList = (props) => {
@@ -72,27 +105,27 @@ const PasteList = (props) => {
 
     let previousLinkType = "none";
 
-    pasteNodes.push(<div key={-1} className='paste'><p>While focused on this area, paste text, links, and image links with Ctrl + V!</p></div>);
+    pasteNodes.push(<div key={-1} className='paste'><p>While focused on this area, paste text, links, image links, and YouTube links with Ctrl + V!</p></div>);
 
     for (let i = 0; i < props.pastes.length; i++) {
         let paste = props.pastes[i];
         if (isFormattedUrl(paste.text)) {
             let embedUrl;
             if (isImageUrl(paste.text)) {
-                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><img src={paste.text} alt={'Image imported from web'} />{getPasteHoverButtons()}</div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><img src={paste.text} alt={'Image imported from web'} />{getPasteHoverButtons()}</div>);
                 previousLinkType = 'image';
             } else if (embedUrl = isYouTubeUrl(paste.text)) {
-                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><iframe src={embedUrl} className="videoEmbed" type="text/html" frameBorder="0" allowFullScreen></iframe>{getPasteHoverButtons()}</div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><iframe src={embedUrl} className="videoEmbed" type="text/html" frameBorder="0" allowFullScreen></iframe>{getPasteHoverButtons()}</div>);
                 previousLinkType = 'youtube';
             } else {
-                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a>{getPasteHoverButtons()}</div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a>{getPasteHoverButtons()}</div>);
                 previousLinkType = 'link';
             }
         } else {
             if (previousLinkType == 'p') {
-                pasteNodes.push(<div className='lowMarginPaste' onMouseOver={pasteHover} key={i}><p>{paste.text}</p>{getPasteHoverButtons()}</div>);
+                pasteNodes.push(<div className='lowMarginPaste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><p>{paste.text}</p>{getPasteHoverButtons()}</div>);
             } else {
-                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} key={i}><p>{paste.text}</p>{getPasteHoverButtons()}</div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><p>{paste.text}</p>{getPasteHoverButtons()}</div>);
             }
             previousLinkType = 'p';
         }

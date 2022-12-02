@@ -36,8 +36,21 @@ const makePaste = async (req, res) => {
   }
 };
 
+const deletePaste = async (req, res) => {
+  try {
+    await Paste.deleteOne({
+      _id: req.body.id,
+    });
+    return res.status(204).json({ message: 'Paste deleted!' });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: 'An error occured!' });
+  }
+};
+
 module.exports = {
   appPage,
   getPastes,
   makePaste,
+  deletePaste,
 };

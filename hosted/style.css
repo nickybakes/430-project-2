@@ -194,7 +194,12 @@ input:active {
     position: absolute;
     top: -2em;
     right: -2em;
+    opacity: 1;
+}
+
+.hidden {
     visibility: hidden;
+    opacity: 0;
 }
 
 .videoEmbed {
