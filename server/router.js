@@ -1,6 +1,10 @@
 const controllers = require('./controllers');
 const mid = require('./middleware');
 
+const notFoundPage = (req, res) => {
+  res.render('notFound', { csrfToken: req.csrfToken() });
+};
+
 const router = (app) => {
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
   app.get('/getChannels', mid.requiresLogin, controllers.Channel.getChannels);
@@ -18,10 +22,6 @@ const router = (app) => {
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.get('*', mid.requiresSecure, notFoundPage);
-};
-
-const notFoundPage = (req, res) => {
-  res.render('notFound', { csrfToken: req.csrfToken() });
 };
 
 module.exports = router;
