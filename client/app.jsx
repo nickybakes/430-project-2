@@ -165,6 +165,33 @@ const ChannelList = (props) => {
     );
 }
 
+const Options = (props) => {
+    if (props.channels == undefined || props.channels.length === 0) {
+        return (
+            <div className="optionsList">
+                <p>No Channels</p>
+            </div>
+        );
+    }
+
+    let channelNodes = [];
+
+    for (let i = 0; i < props.channels.length; i++) {
+        let channel = props.channels[i];
+        if (i == 0) {
+            channelNodes.push(<button key={channel.index + channel.name} className="buttonLook channelButton active" index={channel.index} onClick={onChannelButtonClick}>{channel.name}</button>);
+        } else {
+            channelNodes.push(<button key={channel.index + channel.name} className="buttonLook channelButton" index={channel.index} onClick={onChannelButtonClick}>{channel.name}</button>);
+        }
+    }
+
+    return (
+        <div className="optionsList">
+            {channelNodes}
+        </div>
+    );
+}
+
 const loadPastesFromServer = async () => {
     const csrfRes = await fetch('/getToken');
     const csrfData = await csrfRes.json();
@@ -187,7 +214,20 @@ const loadChannelsFromServer = async () => {
     const data = await response.json();
     ReactDOM.render(
         <ChannelList channels={data.channels} />,
-        document.getElementById('sideBar')
+        document.getElementById('channels')
+    );
+}
+
+const loadOptionsFromServer = async () => {
+    const csrfRes = await fetch('/getToken');
+    const csrfData = await csrfRes.json();
+    csrf = csrfData.csrfToken;
+
+    const response = await fetch('/getChannels');
+    const data = await response.json();
+    ReactDOM.render(
+        <ChannelList channels={data.channels} />,
+        document.getElementById('options')
     );
 }
 
@@ -205,6 +245,7 @@ const onChannelButtonClick = (e) => {
 
 const createSidebar = () => {
     loadChannelsFromServer();
+    loadOptionsFromServer();
 }
 
 const init = async () => {
@@ -212,11 +253,6 @@ const init = async () => {
     const data = await response.json();
 
     csrf = data.csrfToken;
-
-    ReactDOM.render(
-        <ChannelList csrf={data.csrfToken} />,
-        document.getElementById('sideBar')
-    );
 
     const mainView = document.getElementById('mainView');
 
