@@ -40,7 +40,7 @@ PasteSchema.statics.findByOwner = (ownerId, channelIndex, callback) => {
     channel: channelIndex,
   };
 
-  return PasteModel.find(search).select('text').lean().exec(callback);
+  return PasteModel.find(search).select('text createdDate').lean().exec(callback);
 };
 
 PasteModel = mongoose.model('Paste', PasteSchema);

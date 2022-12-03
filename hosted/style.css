@@ -205,11 +205,21 @@ input:active {
 
 .pasteHoverButtons{
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 75% auto auto;
     position: absolute;
     top: -2em;
     right: -2em;
     opacity: 1;
+}
+
+.dateText{
+    display: block;
+    color: #c3c3c3;
+    text-align: right;
+    background-color: rgb(29, 29, 29);
+    height: 52%;
+    padding: .25em;
+    padding-bottom: 0;
 }
 
 .hidden {

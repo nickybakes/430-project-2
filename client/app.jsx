@@ -91,13 +91,20 @@ const deletePasteButtonClick = async (e) => {
 
     let id = currentNode.getAttribute('data-id');
 
-    console.log("deleting paste with id of: " + id);
-
     helper.sendPost("/app", { id, _csrf: csrf }, loadPastesFromServer, 'DELETE');
 }
 
-const getPasteHoverButtons = () => {
-    return <div className='pasteHoverButtons hidden'><button className="buttonLook rightSideFlat" onClick={copyPasteButtonClick}>C</button><button className="buttonLook leftSideFlat" onClick={deletePasteButtonClick}>X</button></div>;
+const getPasteHoverButtons = (createdDate) => {
+    let time = new Date(createdDate);
+
+    console.log(createdDate);
+
+    //gotten from: https://stackoverflow.com/questions/8888491/how-do-you-display-javascript-datetime-in-12-hour-am-pm-format
+    let timeText = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+
+    let dateText = time.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' });
+
+    return <div className='pasteHoverButtons hidden'><div className='dateText'>{dateText + " " + timeText}</div><button className="buttonLook rightSideFlat" onClick={copyPasteButtonClick}>C</button><button className="buttonLook leftSideFlat" onClick={deletePasteButtonClick}>X</button></div>;
 }
 
 const PasteList = (props) => {
@@ -112,20 +119,20 @@ const PasteList = (props) => {
         if (isFormattedUrl(paste.text)) {
             let embedUrl;
             if (isImageUrl(paste.text)) {
-                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><img src={paste.text} alt={'Image imported from web'} />{getPasteHoverButtons()}</div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><img src={paste.text} alt={'Image imported from web'} />{getPasteHoverButtons(paste.createdDate)}</div>);
                 previousLinkType = 'image';
             } else if (embedUrl = isYouTubeUrl(paste.text)) {
-                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><iframe src={embedUrl} className="videoEmbed" type="text/html" frameBorder="0" allowFullScreen></iframe>{getPasteHoverButtons()}</div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a><br /><iframe src={embedUrl} className="videoEmbed" type="text/html" frameBorder="0" allowFullScreen></iframe>{getPasteHoverButtons(paste.createdDate)}</div>);
                 previousLinkType = 'youtube';
             } else {
-                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a>{getPasteHoverButtons()}</div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><a href={paste.text} target="_blank" className="inlineLink">{paste.text}</a>{getPasteHoverButtons(paste.createdDate)}</div>);
                 previousLinkType = 'link';
             }
         } else {
             if (previousLinkType == 'p') {
-                pasteNodes.push(<div className='lowMarginPaste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><p>{paste.text}</p>{getPasteHoverButtons()}</div>);
+                pasteNodes.push(<div className='paste lowMarginPaste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><p>{paste.text}</p>{getPasteHoverButtons(paste.createdDate)}</div>);
             } else {
-                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><p>{paste.text}</p>{getPasteHoverButtons()}</div>);
+                pasteNodes.push(<div className='paste' onMouseOver={pasteHover} onMouseLeave={pasteHoverOff} data-raw-text={paste.text} data-id={paste._id} key={i}><p>{paste.text}</p>{getPasteHoverButtons(paste.createdDate)}</div>);
             }
             previousLinkType = 'p';
         }
@@ -245,7 +252,7 @@ const onChannelButtonClick = (e) => {
 
 const createSidebar = () => {
     loadChannelsFromServer();
-    loadOptionsFromServer();
+    // loadOptionsFromServer();
 }
 
 const init = async () => {
