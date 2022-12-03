@@ -17,7 +17,11 @@ const router = (app) => {
   app.delete('/app', mid.requiresLogin, controllers.Paste.deletePaste);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
-  app.get('*', mid.requiresSecure, controllers.Account.loginPage);
+  app.get('*', mid.requiresSecure, notFoundPage);
+};
+
+const notFoundPage = (req, res) => {
+  res.render('notFound', { csrfToken: req.csrfToken() });
 };
 
 module.exports = router;
