@@ -356,6 +356,18 @@ input:active {
     pointer-events: none
 }
 
+#mobilePasteButton{
+    position: absolute;
+    width: 50vw;
+    bottom: 0;
+    visibility: hidden;
+    font-size: x-large;
+    font-weight: bold;
+    /* background-color: #ffd900; */
+    /* color: black; */
+    left: 25%;
+}
+
 @media screen and (max-width:1700px) {
 
     button,
@@ -396,6 +408,10 @@ input:active {
     .paste,
     .lowMarginPaste {
         font-size: small;
+    }
+
+    #mobilePasteButton{
+        visibility: visible;
     }
 
     #renameChannelsModal{

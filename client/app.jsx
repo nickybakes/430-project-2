@@ -408,6 +408,11 @@ const init = async () => {
 
     createSidebar();
     loadPastesFromServer();
+
+    const pasteButton = document.getElementById('mobilePasteButton');
+    pasteButton.addEventListener('click', (e) => {
+        pasteFromClipboard(e);
+    });
 }
 
 window.onload = init;
