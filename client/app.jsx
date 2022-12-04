@@ -190,7 +190,7 @@ const ChannelEditor = (props) => {
         let newDiv = (<div className='grid2x1' key={i}>
             <div>
                 <label htmlFor={"currentName" + i}>Current Name: </label>
-                <h2 id={"currentName" + i}>{channel.name}</h2>
+                <h2 id={"currentName" + i} className='currentName'>{channel.name}</h2>
             </div>
             <div>
                 <label htmlFor={"newName" + i}>New Name: </label>
@@ -208,8 +208,8 @@ const ChannelEditor = (props) => {
             </div>
             <div key='b'>
                 <div className='grid2x1'>
-                    <button className="buttonLook" onClick={saveRenameChannels}>Save Changes</button>
                     <button className="buttonLook" onClick={closeRenameChannels}>Cancel</button>
+                    <button className="buttonLook" onClick={saveRenameChannels}>Save Changes</button>
                 </div>
             </div>
         </div>

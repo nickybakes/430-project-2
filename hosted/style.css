@@ -304,6 +304,11 @@ input:active {
     padding: 10px 8px;
 }
 
+.currentName{
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+}
+
 
 .channelEditor {
     display: grid;
@@ -391,6 +396,11 @@ input:active {
     .paste,
     .lowMarginPaste {
         font-size: small;
+    }
+
+    #renameChannelsModal{
+        width: 85%;
+        height: 85%;
     }
 }
 
