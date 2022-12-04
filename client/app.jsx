@@ -1,3 +1,4 @@
+const { model } = require('mongoose');
 const helper = require('./helper.js');
 
 let selectedChannelIndex = 0;
@@ -157,7 +158,7 @@ const ChannelList = (props) => {
 
     for (let i = 0; i < props.channels.length; i++) {
         let channel = props.channels[i];
-        if (i == 0) {
+        if (i == selectedChannelIndex) {
             channelNodes.push(<button key={channel.index + channel.name} className="buttonLook channelButton active" index={channel.index} onClick={onChannelButtonClick}>{channel.name}</button>);
         } else {
             channelNodes.push(<button key={channel.index + channel.name} className="buttonLook channelButton" index={channel.index} onClick={onChannelButtonClick}>{channel.name}</button>);
@@ -171,8 +172,95 @@ const ChannelList = (props) => {
     );
 }
 
+const ChannelEditor = (props) => {
+    if (props.channels == undefined || props.channels.length === 0) {
+        return (
+            <div className="channelEditor" key='0'>
+                <h2>Rename Channels</h2>
+                <p>No Channels</p>
+            </div>
+        );
+    }
+
+    let channelNodes = [];
+
+    for (let i = 0; i < props.channels.length; i++) {
+        let channel = props.channels[i];
+
+        let newDiv = (<div className='grid2x1' key={i}>
+            <div>
+                <label htmlFor={"currentName" + i}>Current Name: </label>
+                <h2 id={"currentName" + i}>{channel.name}</h2>
+            </div>
+            <div>
+                <label htmlFor={"newName" + i}>New Name: </label>
+                <input id={"newName" + i} type="text" name="newName" defaultValue={channel.name} maxLength="15" />
+            </div>
+        </div>);
+        channelNodes.push(newDiv);
+    }
+
+    return (
+        <div className="channelEditor">
+            <div key='a'>
+                <h2>Rename Channels</h2>
+                {channelNodes}
+            </div>
+            <div key='b'>
+                <div className='grid2x1'>
+                    <button className="buttonLook" onClick={saveRenameChannels}>Save Changes</button>
+                    <button className="buttonLook" onClick={closeRenameChannels}>Cancel</button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 const onClickRenameChannels = () => {
-    console.log("RENAME");
+    let modal = document.getElementById('fullScreenModal');
+    modal.classList.remove('hidden');
+    modal.querySelector('#closeModalArea').onclick = closeRenameChannels;
+
+    loadChannelNameEditor();
+}
+
+const saveRenameChannels = (e) => {
+    let modal = document.getElementById('renameChannelsModal');
+
+    let newNames = {};
+
+    for (let i = 0; i < 5; i++) {
+        let newNameElement = modal.querySelector('#newName' + i);
+
+        if (newNameElement != null) {
+            newNames[i] = newNameElement.value;
+        } else {
+            break;
+        }
+    }
+
+    helper.sendPost("/renameChannels", { newNames, _csrf: csrf }, loadChannelsFromServer, 'POST');
+
+    closeRenameChannels();
+}
+
+const closeRenameChannels = () => {
+    let modal = document.getElementById('fullScreenModal');
+    modal.classList.add('hidden');
+    modal.querySelector('#closeModalArea').onclick = null;
+}
+
+const loadChannelNameEditor = async () => {
+    const csrfRes = await fetch('/getToken');
+    const csrfData = await csrfRes.json();
+    csrf = csrfData.csrfToken;
+
+    const response = await fetch('/getChannels');
+    const data = await response.json();
+    ReactDOM.render(
+        <ChannelEditor channels={data.channels} />,
+        document.getElementById('renameChannelsModal')
+    );
 }
 
 
@@ -180,7 +268,6 @@ const onClickRenameChannels = () => {
 const ChannelOptionsArea = (props) => {
     return (
         <div>
-            <h2>Channel Options</h2>
             <button className='buttonLook' onClick={onClickRenameChannels}>Edit Channel Names</button>
         </div>
     );
@@ -193,7 +280,7 @@ const onClickPurchasePremium = () => {
 const PremiumOptionsArea = (props) => {
     return (
         <div>
-            <h2>Premium Options</h2>
+            <h2>Account and Billing</h2>
             <p>Purchasing premium gives you 5 total channels to store pastes in. Premium is a one time purchase of $7.99.</p>
             <button className='buttonLook buttonLookGreen' onClick={onClickPurchasePremium}>Purchase Premium</button>
         </div>
@@ -229,7 +316,6 @@ const passwordChangeSuccess = () => {
 const PasswordChangeArea = (props) => {
     return (
         <div>
-            <h2>Password Options</h2>
             <label htmlFor="pass">New Password: </label>
             <input id="pass" type="password" name="pass" placeholder="password" />
             <label htmlFor="pass">Confirm your new Password: </label>

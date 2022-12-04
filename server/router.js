@@ -8,6 +8,7 @@ const notFoundPage = (req, res) => {
 const router = (app) => {
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
   app.get('/getChannels', mid.requiresLogin, controllers.Channel.getChannels);
+  app.post('/renameChannels', mid.requiresLogin, controllers.Channel.renameChannels);
   app.get('/getPastes', mid.requiresLogin, controllers.Paste.getPastes);
 
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
