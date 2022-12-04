@@ -361,10 +361,11 @@ input:active {
     width: 50vw;
     bottom: 0;
     visibility: hidden;
-    font-size: x-large;
+    font-size: 3em;
     font-weight: bold;
-    /* background-color: #ffd900; */
-    /* color: black; */
+    border-width: 6px;
+    min-height: 100px;
+    background-color: #8b6400dc;
     left: 25%;
 }
 
