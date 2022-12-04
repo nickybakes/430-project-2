@@ -46,7 +46,8 @@ const sendPost = async (url, data, handler, method = 'POST') => {
     hideMessage();
 
     if (result.error) {
-      handleError(result.error);
+      showMessage(result.error);
+      return;
     }
 
     if (result.redirect) {

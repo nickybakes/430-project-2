@@ -71,6 +71,24 @@ const signup = async (req, res) => {
   }
 };
 
+const passwordChange = async (req, res) => {
+  const newHash = await Account.generateHash(req.body.pass);
+
+  Account.updateOne({
+    _id: req.session.account._id,
+  }, {
+    password: newHash,
+  }, (err) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
+    }
+    return res.status(204).json({ message: 'Password updated!' });
+  });
+};
+
+const getPremium = (req, res) => res.json({ premium: req.session.account.isPremium });
+
 const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
 
 module.exports = {
@@ -79,4 +97,6 @@ module.exports = {
   logout,
   signup,
   getToken,
+  passwordChange,
+  getPremium,
 };

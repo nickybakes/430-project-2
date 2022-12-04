@@ -194,7 +194,7 @@ const ChannelEditor = (props) => {
             </div>
             <div>
                 <label htmlFor={"newName" + i}>New Name: </label>
-                <input id={"newName" + i} type="text" name="newName" defaultValue={channel.name} maxLength="15" />
+                <input id={"newName" + i} type="text" name="newName" defaultValue={channel.name} maxLength="18" />
             </div>
         </div>);
         channelNodes.push(newDiv);
@@ -311,6 +311,8 @@ const handlePasswordChange = (e) => {
 
 const passwordChangeSuccess = () => {
     helper.showMessage('Password changed!');
+    document.getElementById('pass').value = '';
+    document.getElementById('pass2').value = '';
 }
 
 const PasswordChangeArea = (props) => {
@@ -365,12 +367,12 @@ const loadOptionsFromServer = async () => {
     );
 
     ReactDOM.render(
-        <PremiumOptionsArea channels={data.channels} />,
+        <PremiumOptionsArea/>,
         document.getElementById('premiumArea')
     );
 
     ReactDOM.render(
-        <PasswordChangeArea channels={data.channels} />,
+        <PasswordChangeArea />,
         document.getElementById('passwordChangeArea')
     );
 }
