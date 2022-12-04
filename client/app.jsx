@@ -96,9 +96,6 @@ const deletePasteButtonClick = async (e) => {
 
 const getPasteHoverButtons = (createdDate) => {
     let time = new Date(createdDate);
-
-    console.log(createdDate);
-
     //gotten from: https://stackoverflow.com/questions/8888491/how-do-you-display-javascript-datetime-in-12-hour-am-pm-format
     let timeText = time.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 
@@ -113,6 +110,8 @@ const PasteList = (props) => {
     let previousLinkType = "none";
 
     pasteNodes.push(<div key={-1} className='paste'><p>While focused on this area, paste text, links, image links, and YouTube links with Ctrl + V!</p></div>);
+
+    props.pastes.reverse();
 
     for (let i = 0; i < props.pastes.length; i++) {
         let paste = props.pastes[i];
@@ -172,29 +171,70 @@ const ChannelList = (props) => {
     );
 }
 
-const Options = (props) => {
-    if (props.channels == undefined || props.channels.length === 0) {
-        return (
-            <div className="optionsList">
-                <p>No Channels</p>
-            </div>
-        );
-    }
+const onClickRenameChannels = () => {
+    console.log("RENAME");
+}
 
-    let channelNodes = [];
 
-    for (let i = 0; i < props.channels.length; i++) {
-        let channel = props.channels[i];
-        if (i == 0) {
-            channelNodes.push(<button key={channel.index + channel.name} className="buttonLook channelButton active" index={channel.index} onClick={onChannelButtonClick}>{channel.name}</button>);
-        } else {
-            channelNodes.push(<button key={channel.index + channel.name} className="buttonLook channelButton" index={channel.index} onClick={onChannelButtonClick}>{channel.name}</button>);
-        }
-    }
 
+const ChannelOptionsArea = (props) => {
     return (
-        <div className="optionsList">
-            {channelNodes}
+        <div>
+            <h2>Channel Options</h2>
+            <button className='buttonLook' onClick={onClickRenameChannels}>Edit Channel Names</button>
+        </div>
+    );
+}
+
+const onClickPurchasePremium = () => {
+    console.log("PREMIUM");
+}
+
+const PremiumOptionsArea = (props) => {
+    return (
+        <div>
+            <h2>Premium Options</h2>
+            <p>Purchasing premium gives you 5 total channels to store pastes in. Premium is a one time purchase of $7.99.</p>
+            <button className='buttonLook buttonLookGreen' onClick={onClickPurchasePremium}>Purchase Premium</button>
+        </div>
+    );
+}
+
+const handlePasswordChange = (e) => {
+    e.preventDefault();
+    helper.hideMessage();
+
+    const pass = e.target.parentNode.querySelector('#pass').value;
+    const pass2 = e.target.parentNode.querySelector('#pass2').value;
+
+    if (!pass) {
+        helper.showMessage('Password is empty!');
+        return false;
+    }
+
+    if (pass != pass2) {
+        helper.showMessage('Passwords do not match!');
+        return false;
+    }
+
+    helper.sendPost("/passwordChange", { pass, _csrf: csrf }, passwordChangeSuccess, "POST");
+
+    return false;
+}
+
+const passwordChangeSuccess = () => {
+    helper.showMessage('Password changed!');
+}
+
+const PasswordChangeArea = (props) => {
+    return (
+        <div>
+            <h2>Password Options</h2>
+            <label htmlFor="pass">New Password: </label>
+            <input id="pass" type="password" name="pass" placeholder="password" />
+            <label htmlFor="pass">Confirm your new Password: </label>
+            <input id="pass2" type="password" name="pass2" placeholder="retype password" />
+            <button className="buttonLook" onClick={handlePasswordChange}>Change Password</button>
         </div>
     );
 }
@@ -210,6 +250,7 @@ const loadPastesFromServer = async () => {
         <PasteList pastes={data.pastes} />,
         document.getElementById('mainView')
     );
+
 }
 
 const loadChannelsFromServer = async () => {
@@ -233,8 +274,18 @@ const loadOptionsFromServer = async () => {
     const response = await fetch('/getChannels');
     const data = await response.json();
     ReactDOM.render(
-        <ChannelList channels={data.channels} />,
-        document.getElementById('options')
+        <ChannelOptionsArea channels={data.channels} />,
+        document.getElementById('editChannelsArea')
+    );
+
+    ReactDOM.render(
+        <PremiumOptionsArea channels={data.channels} />,
+        document.getElementById('premiumArea')
+    );
+
+    ReactDOM.render(
+        <PasswordChangeArea channels={data.channels} />,
+        document.getElementById('passwordChangeArea')
     );
 }
 
@@ -252,7 +303,7 @@ const onChannelButtonClick = (e) => {
 
 const createSidebar = () => {
     loadChannelsFromServer();
-    // loadOptionsFromServer();
+    loadOptionsFromServer();
 }
 
 const init = async () => {

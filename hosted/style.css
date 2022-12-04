@@ -55,27 +55,35 @@ nav {
     width: 100%;
     background-color: rgb(29, 29, 29);
     border-right: #ffd900 solid 2px;
+    display: grid;
+    grid-template-rows: auto auto;
 }
 
-#channels{
-    width: 100%;
+#allOptions {
+    display: block;
+    margin: 0 auto;
+    width: 90%;
+    height: 100%;
 }
 
-#options {
-    width: 100%;
+.optionsArea h2 {
+    margin-bottom: .3em;
 }
 
-#options{
-    width: 100%;
-    height: 500px;
-    float: bottom;
-    background-color: white;
+.optionsArea p {
+    text-align: center;
+    margin: .5em 0;
 }
 
 #mainView {
     width: 100%;
     height: 95vh;
     overflow-y: auto;
+}
+
+label {
+    display: block;
+    text-align: center;
 }
 
 button,
@@ -92,6 +100,17 @@ input {
     margin: 5px;
     width: 100%;
     outline: none;
+}
+
+.channelButton {
+    margin-top: .75em;
+    margin-right: -1px;
+    width: 95%;
+    float: right;
+}
+
+.buttonLookGreen {
+    border: #3aca38 solid 2px;
 }
 
 .buttonLook.channelButton {
@@ -127,6 +146,13 @@ input:focus {
     background-color: #ffd9002a;
 }
 
+.buttonLookGreen:hover,
+.buttonLookGreen:focus {
+    border-color: #3aca38;
+    color: #3aca38;
+    background-color: #2fdc402a;
+}
+
 button.active,
 button:active,
 .buttonLook.channelButton.active,
@@ -135,6 +161,13 @@ button:active,
 input:active {
     border-color: #ffd900;
     background-color: #ffd900;
+    color: black;
+}
+
+.buttonLookGreen.active,
+.buttonLookGreen:active {
+    border-color: #3aca38;
+    background-color: #3aca38;
     color: black;
 }
 
@@ -165,6 +198,11 @@ input:active {
 #signupForm {
     width: 30vw;
     margin: 3em auto;
+}
+
+#passwordChangeForm {
+    width: 100%;
+    margin: .25em auto;
 }
 
 .pasteList {
@@ -203,7 +241,7 @@ input:active {
     background-color: rgb(29, 29, 29);
 }
 
-.pasteHoverButtons{
+.pasteHoverButtons {
     display: grid;
     grid-template-columns: 75% auto auto;
     position: absolute;
@@ -212,7 +250,7 @@ input:active {
     opacity: 1;
 }
 
-.dateText{
+.dateText {
     display: block;
     color: #c3c3c3;
     text-align: right;
@@ -276,5 +314,11 @@ input:active {
         padding-bottom: 6em;
         margin: 0 auto;
         margin-bottom: 6em;
+    }
+
+    button,
+    .buttonLook,
+    input {
+        font-size: medium;
     }
 }
