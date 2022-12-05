@@ -14,6 +14,8 @@ const csrf = require('csurf');
 
 const router = require('./router.js');
 
+//sets up all our dependencies for the server
+//things like Redis, mongo db connection, etc
 const setup = async () => {
   const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
@@ -27,6 +29,7 @@ const setup = async () => {
 
   const redisURL = process.env.REDISCLOUD_URL;
 
+  //sets up our redis client for connecting later
   const redisClient = redis.createClient({
     legacyMode: true,
     url: redisURL,
@@ -36,6 +39,7 @@ const setup = async () => {
 
   const app = express();
 
+  //app.use sets up various dependencies needed for the server to be good
   app.use(helmet({
     crossOriginEmbedderPolicy: false,
     contentSecurityPolicy: false,
@@ -46,6 +50,7 @@ const setup = async () => {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
+  //set up our current user session with redis
   app.use(session({
     key: 'sessionid',
     store: new RedisStore({
