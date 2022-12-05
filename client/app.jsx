@@ -274,17 +274,34 @@ const ChannelOptionsArea = (props) => {
 }
 
 const onClickPurchasePremium = () => {
-    console.log("PREMIUM");
+    helper.sendPost("/purchasePremium", { _csrf: csrf }, purchasePremiumSuccess, 'POST');
+}
+
+const purchasePremiumSuccess = () => {
+
+    helper.hideMessage();
+    helper.showMessage('Premium purchased! Thank you!');
+
+    createSidebar();
 }
 
 const PremiumOptionsArea = (props) => {
-    return (
-        <div>
-            <h2>Account and Billing</h2>
-            <p>Purchasing premium gives you 5 total channels to store pastes in. Premium is a one time purchase of $7.99.</p>
-            <button className='buttonLook buttonLookGreen' onClick={onClickPurchasePremium}>Purchase Premium</button>
-        </div>
-    );
+    if (props.isPremium) {
+        return (
+            <div>
+                <h2>Account and Billing</h2>
+                <p>You are a Premium member. Thank you for supporting us!</p>
+            </div>
+        );
+    } else {
+        return (
+            <div>
+                <h2>Account and Billing</h2>
+                <p>Purchasing premium gives you 5 total channels to store pastes in. Premium is a one time purchase of $7.99.</p>
+                <button className='buttonLook buttonLookGreen' onClick={onClickPurchasePremium}>Purchase Premium</button>
+            </div>
+        );
+    }
 }
 
 const handlePasswordChange = (e) => {
@@ -366,8 +383,11 @@ const loadOptionsFromServer = async () => {
         document.getElementById('editChannelsArea')
     );
 
+    const response2 = await fetch('/getPremium');
+    const data2 = await response2.json();
+
     ReactDOM.render(
-        <PremiumOptionsArea/>,
+        <PremiumOptionsArea isPremium={data2.isPremium} />,
         document.getElementById('premiumArea')
     );
 

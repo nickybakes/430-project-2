@@ -11,6 +11,7 @@ const router = (app) => {
   app.get('/getPremium', mid.requiresLogin, controllers.Account.getPremium);
   app.post('/renameChannels', mid.requiresLogin, controllers.Channel.renameChannels);
   app.post('/passwordChange', mid.requiresLogin, controllers.Account.passwordChange);
+  app.post('/purchasePremium', mid.requiresLogin, controllers.Account.purchasePremium);
   app.get('/getPastes', mid.requiresLogin, controllers.Paste.getPastes);
 
   app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);

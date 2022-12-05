@@ -1,4 +1,5 @@
 const models = require('../models');
+const AccountModel = require('../models/Account');
 
 const { Account, Channel } = models;
 
@@ -87,7 +88,37 @@ const passwordChange = async (req, res) => {
   });
 };
 
-const getPremium = (req, res) => res.json({ premium: req.session.account.isPremium });
+const getPremium = (req, res) => {
+  AccountModel.findOne({
+    _id: req.session.account._id,
+  }, (err, docs) => {
+    if (err) {
+      console.log(err);
+      res.status(400).json({ error: 'An error occured' });
+    } else {
+      res.status(200).json({ isPremium: docs.isPremium });
+    }
+  });
+};
+
+const purchasePremium = async (req, res) => {
+  try {
+    await AccountModel.updateOne({
+      _id: req.session.account._id,
+      isPremium: false,
+    }, {
+      isPremium: true,
+    });
+
+    makeNewChannel(2, req);
+    makeNewChannel(3, req);
+    makeNewChannel(4, req);
+    res.status(204).json({ error: 'Purchased premium!' });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: 'An error occured, you may already be premium!' });
+  }
+};
 
 const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
 
@@ -99,4 +130,5 @@ module.exports = {
   getToken,
   passwordChange,
   getPremium,
+  purchasePremium,
 };

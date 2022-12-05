@@ -57,7 +57,7 @@ nav {
     max-height: 92vh;
     background-color: rgb(29, 29, 29);
     border-right: #ffd900 solid 2px;
-    row-gap: 6em;
+    row-gap: 4em;
     display: grid;
     grid-template-rows: fit-content(40%) auto;
 }
