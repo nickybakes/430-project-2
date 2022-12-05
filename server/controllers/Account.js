@@ -3,15 +3,19 @@ const AccountModel = require('../models/Account');
 
 const { Account, Channel } = models;
 
+// gives us the log in page
 const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
 
+// logs us out of our current session
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
 };
 
+// when the user wants to log in, this verifies their
+// info is correct and if so logs them in
 const login = (req, res) => {
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
@@ -20,6 +24,7 @@ const login = (req, res) => {
     return res.status(400).json({ error: 'All fields are required!' });
   }
 
+  // if account athentication fails, send back an error message
   return Account.authenticate(username, pass, (err, account) => {
     if (err || !account) {
       return res.status(401).json({ error: 'Wrong username or password!' });
@@ -38,11 +43,13 @@ const makeNewChannel = async (index, req) => {
   return newChannel;
 };
 
+// when the user signs up for a new account
 const signup = async (req, res) => {
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
   const pass2 = `${req.body.pass2}`;
 
+  // checks if the info is all there/correct
   if (!username || !pass || !pass2) {
     return res.status(400).json({ error: 'All fields are required!' });
   }
@@ -52,12 +59,14 @@ const signup = async (req, res) => {
   }
 
   try {
+    // tries to make a new account with the proper data
     const hash = await Account.generateHash(pass);
 
     const newAccount = new Account({ username, password: hash });
     await newAccount.save();
     req.session.account = Account.toAPI(newAccount);
 
+    // all accounts start with 2 default channels
     makeNewChannel(0, req);
     makeNewChannel(1, req);
 
@@ -65,6 +74,7 @@ const signup = async (req, res) => {
   } catch (err) {
     console.log(err);
 
+    // the error if the user name is already in use
     if (err.code === 11000) {
       return res.status(400).json({ error: 'Username already in use.' });
     }
@@ -72,6 +82,7 @@ const signup = async (req, res) => {
   }
 };
 
+// changes the users password, does the hash and everything
 const passwordChange = async (req, res) => {
   const newHash = await Account.generateHash(req.body.pass);
 
@@ -88,6 +99,7 @@ const passwordChange = async (req, res) => {
   });
 };
 
+// gets whether the user's account has premium or not
 const getPremium = (req, res) => {
   AccountModel.findOne({
     _id: req.session.account._id,
@@ -101,6 +113,8 @@ const getPremium = (req, res) => {
   });
 };
 
+// sets the user's account to premium
+// and gives them the extra channels!
 const purchasePremium = async (req, res) => {
   try {
     await AccountModel.updateOne({
@@ -120,6 +134,7 @@ const purchasePremium = async (req, res) => {
   }
 };
 
+// gets the current csrf token
 const getToken = (req, res) => res.json({ csrfToken: req.csrfToken() });
 
 module.exports = {

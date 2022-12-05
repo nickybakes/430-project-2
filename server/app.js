@@ -17,7 +17,7 @@ const router = require('./router.js');
 const setup = async () => {
   const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
-  const dbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/Pasteodon';
+  const dbURI = process.env.MONGODB_URI;
   mongoose.connect(dbURI, (err) => {
     if (err) {
       console.log('Could not connect to database');
@@ -25,7 +25,7 @@ const setup = async () => {
     }
   });
 
-  const redisURL = process.env.REDISCLOUD_URL || 'redis://default:Qg3Ia0o96itoIsgcQIWcx2VhjY8vJA9I@redis-12702.c244.us-east-1-2.ec2.cloud.redislabs.com:12702';
+  const redisURL = process.env.REDISCLOUD_URL;
 
   const redisClient = redis.createClient({
     legacyMode: true,

@@ -5,6 +5,8 @@ let PasteModel = {};
 
 const setName = (name) => _.escape(name).trim();
 
+// a Paste stores the text a user pasted in
+// as well as the index of the channel its in
 const PasteSchema = new mongoose.Schema({
   text:
   {
@@ -34,6 +36,8 @@ PasteSchema.statics.toAPI = (doc) => ({
   text: doc.text,
 });
 
+// finds all pastes owned by a specific user id and
+// within a requested channel index
 PasteSchema.statics.findByOwner = (ownerId, channelIndex, callback) => {
   const search = {
     owner: mongoose.Types.ObjectId(ownerId),

@@ -1,5 +1,6 @@
 const ChannelModel = require('../models/Channel');
 
+// gets all the channels owned by a specific user id
 const getChannels = (req, res) => ChannelModel.findByOwner(req.session.account._id, (err, docs) => {
   if (err) {
     console.log(err);
@@ -9,6 +10,7 @@ const getChannels = (req, res) => ChannelModel.findByOwner(req.session.account._
   return res.json({ channels: docs });
 });
 
+// renames a singular channel after checking if it even exists
 const renameSpecificChannel = async (req, res, _index) => {
   if (req.body.newNames[_index]) {
     try {
@@ -24,6 +26,9 @@ const renameSpecificChannel = async (req, res, _index) => {
   }
 };
 
+// the Rename channels dialog renames any channels
+// the user owns, so we just search for each one
+// up to 5 here
 const renameChannels = (req, res) => {
   renameSpecificChannel(req, res, 0);
   renameSpecificChannel(req, res, 1);

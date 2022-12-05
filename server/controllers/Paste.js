@@ -3,8 +3,10 @@ const PasteModel = require('../models/Paste');
 
 const { Paste } = models;
 
+// gives us the page for the main app
 const appPage = (req, res) => res.render('app');
 
+// grabs all pastes by a certain user, within the requested channel index
 const getPastes = (req, res) => PasteModel.findByOwner(
   req.session.account._id,
   req.query.index,
@@ -18,6 +20,8 @@ const getPastes = (req, res) => PasteModel.findByOwner(
   },
 );
 
+// creates a new paste
+// gives it the data of the channel its in and what user owns it
 const makePaste = async (req, res) => {
   const pasteData = {
     text: req.body.text,
@@ -36,6 +40,8 @@ const makePaste = async (req, res) => {
   }
 };
 
+// deletes a paste from the data base by searching for
+// that paste's ID
 const deletePaste = async (req, res) => {
   try {
     await Paste.deleteOne({

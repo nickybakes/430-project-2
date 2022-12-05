@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 let ChannelModel = {};
 
+// a Channel stores its index, the name set by the user,
+// and what user id owns it
 const ChannelSchema = new mongoose.Schema({
   index: {
     type: Number,
@@ -30,6 +32,7 @@ ChannelSchema.statics.toAPI = (doc) => ({
   name: doc.name,
 });
 
+// finds channels owned by a specific user id
 ChannelSchema.statics.findByOwner = (ownerId, callback) => {
   const search = {
     owner: mongoose.Types.ObjectId(ownerId),

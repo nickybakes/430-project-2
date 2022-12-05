@@ -41,6 +41,8 @@ const sendPost = async (url, data, handler, method = 'POST') => {
   });
 
 
+  //show any errors if there are any
+  //or just call the callback method
   if (response.status != 204) {
     const result = await response.json();
     hideMessage();

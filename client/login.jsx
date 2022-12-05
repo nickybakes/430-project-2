@@ -1,5 +1,8 @@
 const helper = require('./helper.js');
 
+//when the user tries to log in
+//check that they entered all the data
+//and attempt to log them in
 const handleLogin = (e) => {
     e.preventDefault();
     helper.hideMessage();
@@ -18,6 +21,9 @@ const handleLogin = (e) => {
     return false;
 }
 
+//if user tries to sign up for a new account
+//check that they entered all the data correctly
+//and if so, make them a new account!
 const handleSignup = (e) => {
     e.preventDefault();
     helper.hideMessage();
@@ -42,6 +48,7 @@ const handleSignup = (e) => {
     return false;
 }
 
+//this React element shows the form for logging in
 const LoginWindow = (props) => {
     return (
         <form id="loginForm"
@@ -61,6 +68,7 @@ const LoginWindow = (props) => {
     );
 }
 
+//this React element shows the form for signing up for a new account
 const SignupWindow = (props) => {
     return (
         <form id="signupForm"
@@ -82,6 +90,8 @@ const SignupWindow = (props) => {
     );
 }
 
+//initialized the login screen
+//adds event listeners to buttons that need it, etc
 const init = async () => {
     const response = await fetch('/getToken');
     const data = await response.json();

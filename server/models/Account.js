@@ -20,6 +20,7 @@ let AccountModel = {};
 /* Our schema defines the data we will store. A username (string of alphanumeric
    characters), a password (actually the hashed version of the password created
    by bcrypt), and the created date.
+   AND also whether the user is a premium user or not
 */
 const AccountSchema = new mongoose.Schema({
   username: {
